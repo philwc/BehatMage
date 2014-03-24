@@ -192,9 +192,14 @@ CONF;
     {
 	$pageContent = $this->getSession()->getPage()->getContent();
 
+	$pageContentNoQuotes = str_replace('"', '', $pageContent);
+
+	//Try and sanitise the output a bit...
+	$pageContent = str_replace("\n", '', $pageContentNoQuotes);
+
         if(strpos($pageContent, (string) $arg1) === false){
 		throw new \InvalidArgumentException(
-                    "Actual output is:\n" . $pageContent
+                    "Actual output is:\n" . $pageContentNoQuotes
 	        );
 	}
     }
