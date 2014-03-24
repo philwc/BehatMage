@@ -113,7 +113,16 @@ class MagentoContext extends RawMinkContext implements MagentoAwareInterface
     {
         $urlModel = new \Mage_Core_Model_Url();
         $m = explode('/', ltrim($page, '/'));
-        if ($this->app->getFrontController()->getRouter('default')->getRouteByFrontName($m[0])) {
+
+        $found  = false;
+        foreach(array('default', 'standard', 'admin', 'cms') as $router){
+            if ($this->app->getFrontController()->getRouter($router)->getRouteByFrontName($m[0])) {
+                $found = true;
+                break;
+            }
+        }
+
+        if ($found || $page === '/') {
             $this->getSession()->visit($this->locatePath($page));
         } else {
             $xml = <<<CONF
