@@ -192,14 +192,19 @@ CONF;
     {
 	$pageContent = $this->getSession()->getPage()->getContent();
 
-	$pageContentNoQuotes = str_replace('"', '', $pageContent);
+	$pageContent = str_replace("\r", '', $pageContent);
 
-	//Try and sanitise the output a bit...
-	$pageContent = str_replace("\n", '', $pageContentNoQuotes);
+	$cleanContent = '';	
 
-        if(strpos($pageContent, (string) $arg1) === false){
+	foreach(explode("\n", $pageContent) as $line){
+		$line = trim($line);
+		$line = str_replace('"', '\'', $line);
+		$cleanContent .= $line;
+	}
+
+        if(strpos($cleanContent, (string) $arg1) === false){
 		throw new \InvalidArgumentException(
-                    "Actual output is:\n" . $pageContentNoQuotes
+                    "Actual output is:\n" . $pageContent
 	        );
 	}
     }
