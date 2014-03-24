@@ -192,7 +192,7 @@ CONF;
     {
 	$pageContent = $this->getSession()->getPage()->getContent();
 
-        if(strpos($pageContent, (string) $arg1) !== false){
+        if(strpos($pageContent, (string) $arg1) === false){
 		throw new \InvalidArgumentException(
                     "Actual output is:\n" . $pageContent
 	        );
