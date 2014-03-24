@@ -185,29 +185,51 @@ CONF;
         }
     }
 
+
+    private function getPageContent($sanitised = true)
+    {
+        $pageContent = $this->getSession()->getPage()->getContent();
+
+        if(!$sanitised){
+            return $pageContent;
+        }
+        
+        $cleanContent = '';
+        $pageContent = str_replace("\r", '', $pageContent);
+        foreach(explode("\n", $pageContent) as $line){
+                $line = trim($line);
+                $line = str_replace('"', '\'', $line);
+                $cleanContent .= $line;
+        }
+
+        return $cleanContent;
+    }
+
     /**
      * @Then /^I should see text "([^"]*)"$/
      */
     public function iShouldSeeText($arg1)
     {
-	$pageContent = $this->getSession()->getPage()->getContent();
-
-	$pageContent = str_replace("\r", '', $pageContent);
-
-	$cleanContent = '';	
-
-	foreach(explode("\n", $pageContent) as $line){
-		$line = trim($line);
-		$line = str_replace('"', '\'', $line);
-		$cleanContent .= $line;
-	}
-
-        if(strpos($cleanContent, (string) $arg1) === false){
+        if(strpos($this->getPageContent(), (string) $arg1) === false){
 		throw new \InvalidArgumentException(
-                    "Actual output is:\n" . $pageContent
+                    "Actual output is:\n" . $this->getPageContent(false)
 	        );
 	}
     }
+
+
+    /**
+     * @Then /^I should not see text "([^"]*)"$/
+     */
+    public function iShouldNotSeeText($arg1)
+    {
+         if(strpos($this->getPageContent(), (string) $arg1) !== false){
+                throw new \InvalidArgumentException(
+                    "Actual output is:\n" . $this->getPageContent(false)
+                );
+        }
+    }
+
 
     public function setApp(MageApp $app)
     {
