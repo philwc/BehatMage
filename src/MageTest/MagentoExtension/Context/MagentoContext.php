@@ -185,6 +185,20 @@ CONF;
         }
     }
 
+    /**
+     * @Then /^I should see text "([^"]*)"$/
+     */
+    public function iShouldSeeText($arg1)
+    {
+	$pageContent = $this->getSession()->getPage()->getContent();
+
+        if(strpos($pageContent, (string) $arg1) !== false){
+		throw new Exception(
+                    "Actual output is:\n" . $pageContent
+	        );
+	}
+    }
+
     public function setApp(MageApp $app)
     {
         $this->app = $app;
